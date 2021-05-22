@@ -128,7 +128,7 @@ class ApiDescribeSource(query.DescribeSource):
 class HttpApi(query.QueryResourceManager):
 
     class resource_type(query.TypeInfo):
-        service = 'apigateway'
+        service = 'apigatewayv2'
         arn_type = '/apis'
         enum_spec = ('get_apis', 'Items', None)
         id = 'id'
