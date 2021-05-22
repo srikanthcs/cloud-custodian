@@ -169,42 +169,52 @@ class RestApiCrossAccount(CrossAccountAccessFilter):
 
 @HttpApi.action_registry.register('update')
 class UpdateApi(BaseAction):
-    """Update configuration of a REST API.
+    """Update configuration of a HTTP API.
 
     Non-exhaustive list of updateable attributes.
     https://docs.aws.amazon.com/apigateway/api-reference/link-relation/restapi-update/#remarks
 
     :example:
 
-    contrived example to update description on api gateways
+    contrived example to update description on http api gateways
 
     .. code-block:: yaml
 
        policies:
          - name: apigw-description
-           resource: rest-api
+           resource: http-api
            filters:
              - description: empty
            actions:
              - type: update
-               patch:
-                - op: replace
-                  path: /description
-                  value: "not empty :-)"
+               Description: "Not empty :)"
     """
     permissions = ('apigateway:PATCH',)
-    schema = utils.type_schema(
-        'update',
-        patch={'type': 'array', 'items': OP_SCHEMA},
-        required=['patch'])
+    schema = {
+        'type': 'object',
+        'additionalProperties': False,
+        'properties': {
+            'type': {'enum': ['update']},
+            'ApiKeySelectionExpression': {'type': 'string'},
+            'CredentialsArn': {'type': 'string'},
+            'Description': {'type': 'string'},
+            'DisableExecuteApiEndpoint': {'type': 'boolean'},
+            'Name': {'type': 'string'},
+            'RouteKey': {'type': 'string'},
+            'RouteSelectionExpression': {'type': 'string'},
+            'Target': {'type': 'string'},
+            'Version': {'type': 'string'}
+        }
+    }
 
     def process(self, resources):
         client = utils.local_session(
-            self.manager.session_factory).client('apigateway')
+            self.manager.session_factory).client('apigatewayv2')
+        params = dict(self.data)
+        params.pop('type')
         for r in resources:
-            client.update_rest_api(
-                restApiId=r['id'],
-                patchOperations=self.data['patch'])
+            client.update_rest_api(ApiId=r['ApiId'],
+                                   **params)
 
 
 @HttpApi.action_registry.register('delete')
@@ -213,7 +223,7 @@ class DeleteApi(BaseAction):
 
     :example:
 
-    contrived example to delete rest api
+    contrived example to delete http api
 
     .. code-block:: yaml
 
@@ -221,7 +231,7 @@ class DeleteApi(BaseAction):
          - name: apigw-delete
            resource: http-api
            filters:
-             - description: empty
+             - Description: empty
            actions:
              - type: delete
     """
