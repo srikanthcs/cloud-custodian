@@ -234,7 +234,7 @@ class DeleteApi(BaseAction):
         for r in resources:
             try:
                 print(r)
-                client.delete_api(ApiId=r['id'])
+                client.delete_api(ApiId=r['ApiId'])
             except client.exceptions.NotFoundException:
                 continue
 
