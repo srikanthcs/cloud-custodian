@@ -213,7 +213,7 @@ class UpdateApi(BaseAction):
         params = dict(self.data)
         params.pop('type')
         for r in resources:
-            client.update_rest_api(ApiId=r['ApiId'],
+            client.update_api(ApiId=r['ApiId'],
                                    **params)
 
 
