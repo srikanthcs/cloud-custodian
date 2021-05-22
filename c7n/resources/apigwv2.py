@@ -233,7 +233,8 @@ class DeleteApi(BaseAction):
             self.manager.session_factory).client('apigatewayv2')
         for r in resources:
             try:
-                client.delete_rest_api(ApiId=r['id'])
+                print(r)
+                client.delete_api(ApiId=r['id'])
             except client.exceptions.NotFoundException:
                 continue
 
