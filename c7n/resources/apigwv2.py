@@ -213,8 +213,7 @@ class UpdateApi(BaseAction):
         params = dict(self.data)
         params.pop('type')
         for r in resources:
-            client.update_api(ApiId=r['ApiId'],
-                                   **params)
+            client.update_api(ApiId=r['ApiId'], **params)
 
 
 @HttpApi.action_registry.register('delete')
